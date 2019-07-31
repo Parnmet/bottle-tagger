@@ -1,4 +1,3 @@
 # bottle-tagger
 
-- numpy
-- pillow
+- pip install dependencies/*

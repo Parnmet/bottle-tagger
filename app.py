@@ -12,7 +12,8 @@ from PIL import Image, ImageTk
 import json
 import numpy as np
 import tifffile
-
+#local
+import db_manager
 class AutoScrollbar(ttk.Scrollbar):
     """ A scrollbar that hides itself if it's not needed. Works only for grid geometry manager """
     def set(self, lo, hi):
@@ -443,9 +444,14 @@ class MainWindow(ttk.Frame):
         self.master.after(200, lambda: self.e1.focus())
     
     def onSubmit(self, event=None):
+        
         im =  np.array(Image.open(self.path[self.my_image_number]))
         description = self.e1.get()
         isChecked = self.check_default_value.get()
+        #save to db 
+        path = self.path[self.my_image_number].split('/')
+        db_name=f"{path[-3]}_{path[-2]}"
+        db_manager.save(db_name,self.path[self.my_image_number].split('/')[-1],self.e1.get())
         if isChecked != 1:
             self.e1.delete(0, 'end')
         else:
@@ -456,6 +462,7 @@ class MainWindow(ttk.Frame):
             im,
             description=description
         )
+        
         self.tag_value.set(self.getImageInformation())
         self.onNext()
 
