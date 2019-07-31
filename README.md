@@ -1,0 +1,4 @@
+# bottle-tagger
+
+- numpy
+- pillow
