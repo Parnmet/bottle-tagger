@@ -22,13 +22,13 @@ def get_all_path(path):
     return dir_name
 
 
-def save(path, tag):
+def save(path, tag, action):
     full_path = get_all_path(path)
     tb_name = f"{full_path[-3]}_{full_path[-2]}"
-    create_stmt = f"CREATE TABLE  IF NOT EXISTS {tb_name} (image_name text PRIMARY KEY ON CONFLICT REPLACE , tag text)"
+    create_stmt = f"CREATE TABLE  IF NOT EXISTS {tb_name} (image_name text PRIMARY KEY ON CONFLICT REPLACE , tag text,action text)"
     CON.execute(create_stmt)
-    insert_stmt = f"replace INTO {tb_name} (image_name, tag) VALUES(?, ?) "
-    CON.execute(insert_stmt, (full_path[-1], tag))
+    insert_stmt = f"replace INTO {tb_name} (image_name, tag,action) VALUES(?, ?,?) "
+    CON.execute(insert_stmt, (full_path[-1], tag, action))
 
     CON.commit()
 
