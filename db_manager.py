@@ -46,3 +46,6 @@ def get_all_tables():
         results.append(row[0])
     return results
 
+
+if __name__ == "__main__":
+    print(get_all(get_all_tables()[0]))
