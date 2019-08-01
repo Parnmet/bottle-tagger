@@ -329,12 +329,12 @@ class MainWindow(ttk.Frame):
         button_browse.grid(row=2, column=2)
 
         Label(self.master, text="Category").grid(row=3, column=2)
-        # Label(self.master, text="Action").grid(row=5, column=2)
+        Label(self.master, text="Action").grid(row=5, column=2)
 
         self.e1 = Entry(self.master)
-        # self.e2 = Entry(self.master)
+        self.e2 = Entry(self.master)
         self.e1.grid(row=4, column=2)
-        # self.e2.grid(row=6, column=2)
+        self.e2.grid(row=6, column=2)
         # self.e1.focus_set()
         # self.master.after(200, lambda: self.e1.focus())
 
@@ -349,12 +349,14 @@ class MainWindow(ttk.Frame):
         self.tag_value = StringVar(value = '')
         self.label_tag_value = Label(self.master, textvariable=self.tag_value, borderwidth=1,font=(None, 15))
         self.label_tag_value.grid(row=3, column=3)
-        # self.action_status = StringVar(value = "Action")
-        # Label(self.master, textvariable=self.tag_status, borderwidth=1,bg="red").grid(row=2, column=3)
-        # self.action_value = StringVar(value = '')
-        # Label(self.master, textvariable=self.tag_value, borderwidth=1,bg="red").grid(row=3, column=3)
+
+        self.action_status = StringVar(value = "Action")
+        # Label(self.master, textvariable=self.tag_status, borderwidth=1,bg="red").grid(row=5, column=)
+        self.action_value = StringVar(value = '')
+        Label(self.master, textvariable=self.action_value, borderwidth=1,font=(None, 20)).grid(row=4, column=3)
+
         self.index_status = StringVar(value = "1/" + str(len(self.path)))
-        Label(self.master, textvariable=self.index_status, borderwidth=1).grid(row=5, column=3)
+        Label(self.master, textvariable=self.index_status, borderwidth=1).grid(row=6, column=3)
 
         button_previous = Button(self.master, text ="<", command=self.onPrevious)
         button_next = Button(self.master, text =">", command=self.onNext)
@@ -377,12 +379,17 @@ class MainWindow(ttk.Frame):
             self.tag_value.set("")
             self.tag_status.set("Untagged")    
             self.label_tag_status.configure(bg='red')
-        else:
+        if 'IJMetadata' not in page.tags:
+            self.action_value.set("")
+            # self.action_status.configure(bg='red')
+        if 'ImageDescription' in page.tags:
             self.isTagged = True
             self.tag_status.set("Tagged")
             self.label_tag_status.configure(bg='#BFFF7F')
             # self.label_tag_value.configure(bg='green')
             self.tag_value.set(page.tags["ImageDescription"].value)
+        if 'IJMetadata' in page.tags:
+            self.action_value.set((page.tags["IJMetadata"].value)["Info"])
             # return "Tagged"
 
     def updateImageCanvas(self):
@@ -447,6 +454,7 @@ class MainWindow(ttk.Frame):
         
         im =  np.array(Image.open(self.path[self.my_image_number]))
         description = self.e1.get()
+        ijmetadata = self.e2.get()
         isChecked = self.check_default_value.get()
         #save to db 
         db_manager.save(self.path[self.my_image_number],description)
@@ -455,9 +463,15 @@ class MainWindow(ttk.Frame):
         else:
             self.e1.delete(0, 'end')
             self.e1.insert(END, self.default_tag_value[0])
+
+        if description == '':
+            description = self.tag_value.get()
+        if ijmetadata  == '':
+            ijmetadata = self.action_value.get()
         tifffile.imsave(
             self.path[self.my_image_number],
             im,
+            ijmetadata={"Info":ijmetadata},
             description=description
         )
         
