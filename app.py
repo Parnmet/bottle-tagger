@@ -449,9 +449,7 @@ class MainWindow(ttk.Frame):
         description = self.e1.get()
         isChecked = self.check_default_value.get()
         #save to db 
-        path = self.path[self.my_image_number].split('/')
-        db_name=f"{path[-3]}_{path[-2]}"
-        db_manager.save(db_name,self.path[self.my_image_number].split('/')[-1],self.e1.get())
+        db_manager.save(self.path[self.my_image_number],self.e1.get())
         if isChecked != 1:
             self.e1.delete(0, 'end')
         else:
