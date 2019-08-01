@@ -564,7 +564,7 @@ class MainWindow(ttk.Frame):
             self.e1.delete(0, "end")
         else:
             self.e1.delete(0, "end")
-            self.e1.insert(END, self.default_tag_value[0])
+            self.e1.insert(END, self.default_tag_value[1])
 
         if description == "":
             description = self.tag_value.get()
